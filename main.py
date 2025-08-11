@@ -1,41 +1,40 @@
-import os
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from dotenv import load_dotenv
-from agent_config import triage_runner
+from agent_config import triage_agent
+from agents import Runner  
 
-# 1. Cargar variables de entorno desde .env
+# Load environment variables
 load_dotenv()
 
-# 2. Inicializar FastAPI
+# Initialize FastAPI
 app = FastAPI(
     title="Research Assistant API",
-    description="API para consultar a un agente inteligente de investigación y cálculo",
+    description="API to query an intelligent research and calculation agent",
     version="1.0.0"
 )
 
-# 3. Modelo de entrada
+# Input model
 class QueryRequest(BaseModel):
     question: str
 
-# 4. Ruta raíz
+# Root path
 @app.get("/")
 async def root():
-    return {"message": "¡Bienvenido al asistente de investigación!"}
+    return {"message": "Welcome to the research assistant!"}
 
-# 5. Endpoint principal
+# Main endpoint
 @app.post("/ask")
 async def ask_agent(request: QueryRequest):
     if not request.question:
-        raise HTTPException(status_code=400, detail="La pregunta no puede estar vacía.")
+        raise HTTPException(status_code=400, detail="The question cannot be empty.")
     try:
-        # 👇 CORRECTO: runner.run es una función async
-        response = await triage_runner.run(request.question)
-        return {"response": response}
+        result = await Runner.run(triage_agent, request.question)
+        return {"response": result.final_output}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error del agente: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Agent error: {str(e)}")
 
-# 6. Ejecutar con uvicorn si se corre directamente
+# Ejecutar localmente
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
