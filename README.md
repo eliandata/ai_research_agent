@@ -3,7 +3,7 @@ FastAPI service powered by the OpenAI Agents SDK that answers research questions
 It uses a triage system to route queries either to a Web Search Agent or a Math Agent, with guardrails to block offensive input.
 
 # 📂 Repository structure
-ai_agent_project/
+``` ai_agent_project/
 ├── tools/
 │   ├── web_search.py       # Web search tool using DuckDuckGo
 │   └── calculator.py       # Simple average calculator
@@ -12,3 +12,9 @@ ai_agent_project/
 ├── main.py                 # FastAPI application
 ├── .env                    # Environment variables
 └── requirements.txt        # Dependencies
+
+```
+# 🚀 1. Clone the repository
+
+
+
